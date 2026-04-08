@@ -147,6 +147,12 @@ h1, h2, h3, h4 {
     transform: translateY(0);
 }
 
+/* Fallback: Seandainya JS gagal dimuat atau dilarang di browser */
+:not(.js-enabled) .reveal {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 /* Layout Containers */
 .container {
     max-width: 1200px;

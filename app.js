@@ -1,36 +1,45 @@
 /* 
-  Geprek Nabilla - Interactions & State Management (v2 - Customization)
+  Geprek Nabilla - Interactions & State Management (v2.1 - Production Fix)
 */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- 1. UI Reveal & Scroll ---
+    // --- 1. UI Reveal (Intersection Observer for Production) ---
     const revealElements = document.querySelectorAll('.reveal');
-    const revealOnScroll = () => {
-        const windowHeight = window.innerHeight;
-        revealElements.forEach(el => {
-            const elementTop = el.getBoundingClientRect().top;
-            const elementVisible = 150;
-            if (elementTop < windowHeight - elementVisible) {
-                el.classList.add('active');
-            }
+    
+    if ('IntersectionObserver' in window) {
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Reveal once
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
         });
-    };
-    window.addEventListener('scroll', revealOnScroll);
-    revealOnScroll();
 
+        revealElements.forEach(el => revealObserver.observe(el));
+    } else {
+        // Fallback for very old browsers
+        revealElements.forEach(el => el.classList.add('active'));
+    }
+
+    // --- Smooth Scroll ---
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            const target = document.querySelector(targetId);
             if (target) target.scrollIntoView({ behavior: 'smooth' });
         });
     });
 
     // --- 2. Cart & Customization State ---
-    let cart = {}; // key: unique_id, value: {name, price, qty, options}
-    let pendingItem = null; // Stores item temporarily during customization
+    let cart = {}; 
+    let pendingItem = null; 
     
-    // DOM Elements
     const floatingCart = document.getElementById('floating-cart');
     const cartBadge = document.getElementById('cart-badge');
     const cartOverlay = document.getElementById('cart-modal-overlay');
@@ -39,20 +48,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartTotalPrice = document.getElementById('cart-total-price');
     const checkoutBtn = document.getElementById('checkout-btn');
 
-    // Customization Modal Elements
     const customOverlay = document.getElementById('custom-modal-overlay');
     const closeCustomBtn = document.getElementById('close-custom-btn');
     const customItemName = document.getElementById('custom-item-name');
     const customOptionsContainer = document.getElementById('custom-options-container');
     const confirmAddBtn = document.getElementById('confirm-add-btn');
 
-    // Utility: Format Rupiah
-    const formatRp = (num) => {
-        return 'Rp ' + num.toLocaleString('id-ID');
-    };
+    const formatRp = (num) => 'Rp ' + num.toLocaleString('id-ID');
 
-    // Render Cart UI
     const updateCartUI = () => {
+        if (!cartBadge || !cartTotalPrice || !cartItemsContainer || !floatingCart) return;
+
         let totalItems = 0;
         let totalPrice = 0;
         let itemsHtml = '';
@@ -62,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             totalItems += item.qty;
             totalPrice += (item.price * item.qty);
 
-            const optionsText = item.options.length > 0 ? `<div class="cart-item-options">${item.options.join(', ')}</div>` : '';
+            const optionsText = item.options.length > 0 ? `<div class="cart-item-options" style="font-size: 0.8rem; opacity: 0.7;">${item.options.join(', ')}</div>` : '';
 
             itemsHtml += `
                 <div class="cart-item">
@@ -83,18 +89,16 @@ document.addEventListener('DOMContentLoaded', () => {
         cartBadge.innerText = totalItems;
         cartTotalPrice.innerText = formatRp(totalPrice);
         
-        if (totalItems > 0) {
-            floatingCart.style.display = 'flex';
-        } else {
-            floatingCart.style.display = 'none';
-            if (cartOverlay.classList.contains('active')) cartOverlay.classList.remove('active');
+        floatingCart.style.display = totalItems > 0 ? 'flex' : 'none';
+        if (totalItems === 0 && cartOverlay.classList.contains('active')) {
+            cartOverlay.classList.remove('active');
         }
 
         if (totalItems === 0) {
             cartItemsContainer.innerHTML = '<div class="empty-cart-msg">Keranjang Anda masih kosong.</div>';
         } else {
             cartItemsContainer.innerHTML = itemsHtml;
-            document.querySelectorAll('.qty-btn').forEach(btn => {
+            cartItemsContainer.querySelectorAll('.qty-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const id = e.target.getAttribute('data-id');
                     const change = e.target.classList.contains('plus') ? 1 : -1;
@@ -104,14 +108,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Open Customization Modal
     const openCustomModal = (id, name, price, category) => {
+        if (!customItemName || !customOptionsContainer || !customOverlay) return;
+
         pendingItem = { id, name, price: parseInt(price), category, selectedOptions: {} };
         customItemName.innerText = `Kustomisasi ${name}`;
         
         let html = '';
         if (category === 'makanan') {
-            // Level Pedas (0-5)
             html += `
                 <div class="choice-group">
                     <label class="choice-label">Level Pedas (0 - 5)</label>
@@ -131,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
             pendingItem.selectedOptions.nasi = 'Pake Nasi';
             pendingItem.extraPrice = 0;
         } else if (category === 'minuman') {
-            // Level Gula
             html += `
                 <div class="choice-group">
                     <label class="choice-label">Tingkat Manis</label>
@@ -147,21 +150,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         customOptionsContainer.innerHTML = html;
         
-        // Add click events to chips
-        document.querySelectorAll('.choice-chip').forEach(chip => {
+        customOptionsContainer.querySelectorAll('.choice-chip').forEach(chip => {
             chip.addEventListener('click', (e) => {
                 const group = e.target.closest('.choice-chips');
                 const key = group.getAttribute('data-key');
                 const val = e.target.getAttribute('data-value');
                 
-                // Update UI visually
                 group.querySelectorAll('.choice-chip').forEach(c => c.classList.remove('active'));
                 e.target.classList.add('active');
                 
-                // Update state
                 pendingItem.selectedOptions[key] = val;
                 
-                // Handle price addition (for rice)
                 const addPrice = e.target.getAttribute('data-add-price');
                 if (addPrice && key === 'nasi') {
                     pendingItem.extraPrice = parseInt(addPrice);
@@ -179,8 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const optionsArr = Object.values(pendingItem.selectedOptions);
         const finalPrice = pendingItem.price + (pendingItem.extraPrice || 0);
-        
-        // Generate unique ID based on options to separate variants
         const uniqueId = `${pendingItem.id}-${optionsArr.join('-').replace(/\s+/g, '')}`;
 
         if (cart[uniqueId]) {
@@ -198,9 +195,10 @@ document.addEventListener('DOMContentLoaded', () => {
         customOverlay.classList.remove('active');
         pendingItem = null;
 
-        // Feedback
-        floatingCart.style.transform = 'scale(1.2)';
-        setTimeout(() => floatingCart.style.transform = '', 200);
+        if (floatingCart) {
+            floatingCart.style.transform = 'scale(1.2)';
+            setTimeout(() => { if (floatingCart) floatingCart.style.transform = ''; }, 200);
+        }
     };
 
     const changeQty = (id, delta) => {
@@ -210,8 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCartUI();
     };
 
-    // --- 3. Event Listeners ---
-    
+    // --- 3. Events ---
     document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const el = e.currentTarget;
@@ -224,35 +221,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    confirmAddBtn.addEventListener('click', confirmAddToCart);
-    closeCustomBtn.addEventListener('click', () => customOverlay.classList.remove('active'));
+    if (confirmAddBtn) confirmAddBtn.addEventListener('click', confirmAddToCart);
+    if (closeCustomBtn) closeCustomBtn.addEventListener('click', () => customOverlay.classList.remove('active'));
+    if (floatingCart) floatingCart.addEventListener('click', () => cartOverlay.classList.add('active'));
+    if (closeCartBtn) closeCartBtn.addEventListener('click', () => cartOverlay.classList.remove('active'));
 
-    floatingCart.addEventListener('click', () => cartOverlay.classList.add('active'));
-    closeCartBtn.addEventListener('click', () => cartOverlay.classList.remove('active'));
-
-    // Checkout via WhatsApp
-    checkoutBtn.addEventListener('click', () => {
-        let totalItems = 0;
-        let totalPrice = 0;
-        let message = `Halo Geprek Nabilla, saya pesen dong:\n\n`;
-        
-        Object.keys(cart).forEach(id => {
-            const item = cart[id];
-            totalItems += item.qty;
-            const subtotal = item.price * item.qty;
-            totalPrice += subtotal;
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+            let totalItems = 0;
+            let totalPrice = 0;
+            let message = `Halo Geprek Nabilla, saya ingin memesan:\n\n`;
             
-            const optionsStr = item.options.length > 0 ? ` [${item.options.join(', ')}]` : '';
-            message += `- ${item.qty}x ${item.name}${optionsStr} (${formatRp(subtotal)})\n`;
-        });
-        
-        if (totalItems === 0) return;
-        message += `\n*Total: ${formatRp(totalPrice)}*\n\nMohon info total dan ongkirnya ya!`;
+            Object.keys(cart).forEach(id => {
+                const item = cart[id];
+                totalItems += item.qty;
+                const subtotal = item.price * item.qty;
+                totalPrice += subtotal;
+                
+                const optionsStr = item.options.length > 0 ? ` [${item.options.join(', ')}]` : '';
+                message += `- ${item.qty}x ${item.name}${optionsStr} (${formatRp(subtotal)})\n`;
+            });
+            
+            if (totalItems === 0) return;
+            message += `\n*Total Akhir: ${formatRp(totalPrice)}*\n\nMohon informasi total pembayaran dan ongkirnya. Terima kasih!`;
 
-        const waNumber = '6280000000000'; // Placeholder
-        const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
-        window.open(waLink, '_blank');
-    });
+            const waNumber = '6280000000000'; // Update with real number
+            const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+            window.open(waLink, '_blank');
+        });
+    }
 
     updateCartUI();
 });
