@@ -6,6 +6,7 @@
     <title>Geprek Nabilla | Pedasnya Nendang, Harganya Tenang!</title>
     <meta name="description" content="Nikmati kelezatan Ayam Geprek dan Ayam Karamel Nabilla di Gunungpati Semarang. Premium, pedas, dan terjangkau!">
     <link rel="stylesheet" href="/index.css">
+    <link rel="icon" type="image/png" href="/assets/favicon.png">
     <script>document.documentElement.classList.add('js-enabled');</script>
 </head>
 <body>
@@ -13,8 +14,8 @@
     <!-- Navigation -->
     <nav class="glass-nav">
         <div class="container" style="display: flex; justify-content: space-between; align-items: center; height: 80px;">
-            <div class="logo" style="font-family: var(--font-heading); font-weight: 900; color: var(--primary); font-size: 1.5rem;">
-                NABILLA
+            <div class="logo">
+                GEPREK <span style="color: var(--primary);">NABILLA</span>
             </div>
             <div class="nav-links" style="display: flex; gap: 24px;">
                 <a href="#menu" style="text-decoration: none; color: var(--on-surface); font-weight: 600;">Menu</a>
@@ -54,45 +55,43 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px;">
                 
                 <!-- Ayam Geprek -->
-                <div class="card-premium reveal" style="padding: 0; overflow: hidden;">
-                    <div style="height: 250px; background-color: var(--surface-container-high);">
-                        <img src="assets/ayam-geprek.webp" alt="Ayam Geprek" style="width: 100%; height: 100%; object-fit: cover;">
+                        <img src="assets/ayam-geprek.webp" alt="Ayam Geprek" class="card-img">
                     </div>
-                    <div style="padding: 32px;">
-                        <h3 style="font-size: 1.5rem; margin-bottom: 8px;">Ayam Geprek</h3>
-                        <p class="body-lg" style="margin-bottom: 20px;">Ayam krispi gurih dengan sambal ulek segar pedas nendang.</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-size: 1.25rem; font-weight: 800; color: var(--primary);">Rp 13.000</span>
+                    <div class="card-body">
+                        <h3>Ayam Geprek</h3>
+                        <p class="body-lg">Ayam krispi gurih dengan sambal ulek segar pedas nendang.</p>
+                        <div class="card-footer">
+                            <span class="price">Rp 13.000</span>
                             <button class="btn-primary add-to-cart-btn" data-id="geprek" data-name="Ayam Geprek" data-price="13000" data-category="makanan" style="height: 48px; padding: 0 24px; border: none; cursor: pointer; font-family: inherit;">+ Keranjang</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Ayam Karamel -->
-                <div class="card-premium reveal" style="padding: 0; overflow: hidden;">
-                    <div style="height: 250px; background-color: var(--surface-container-high);">
-                        <img src="assets/ayam-karamel.webp" alt="Ayam Karamel" style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="card-premium reveal">
+                    <div class="card-img-container">
+                        <img src="assets/ayam-karamel.webp" alt="Ayam Karamel" class="card-img">
                     </div>
-                    <div style="padding: 32px;">
-                        <h3 style="font-size: 1.5rem; margin-bottom: 8px;">Ayam Karamel</h3>
-                        <p class="body-lg" style="margin-bottom: 20px;">Ayam krispi dengan balutan bumbu karamel gurih manis yang meresap.</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-size: 1.25rem; font-weight: 800; color: var(--primary);">Rp 13.000</span>
+                    <div class="card-body">
+                        <h3>Ayam Karamel</h3>
+                        <p class="body-lg">Ayam krispi dengan balutan bumbu karamel gurih manis yang meresap.</p>
+                        <div class="card-footer">
+                            <span class="price">Rp 13.000</span>
                             <button class="btn-primary add-to-cart-btn" data-id="karamel" data-name="Ayam Karamel" data-price="13000" data-category="makanan" style="height: 48px; padding: 0 24px; border: none; cursor: pointer; font-family: inherit;">+ Keranjang</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Babat Gongso -->
-                <div class="card-premium reveal" style="padding: 0; overflow: hidden;">
-                    <div style="height: 250px; background-color: var(--surface-container-high);">
-                        <img src="assets/babat_gongso.png" alt="Babat Gongso" style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="card-premium reveal">
+                    <div class="card-img-container">
+                        <img src="assets/babat_gongso.webp" alt="Babat Gongso" class="card-img">
                     </div>
-                    <div style="padding: 32px;">
-                        <h3 style="font-size: 1.5rem; margin-bottom: 8px;">Babat Gongso</h3>
-                        <p class="body-lg" style="margin-bottom: 20px;">Irisan babat sapi empuk tumis bumbu kecap manis pedas legit khas Semarang.</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-size: 1.25rem; font-weight: 800; color: var(--primary);">Rp 15.000</span>
+                    <div class="card-body">
+                        <h3>Babat Gongso</h3>
+                        <p class="body-lg">Irisan babat sapi empuk tumis bumbu kecap manis pedas legit khas Semarang.</p>
+                        <div class="card-footer">
+                            <span class="price">Rp 15.000</span>
                             <button class="btn-primary add-to-cart-btn" data-id="babat" data-name="Babat Gongso" data-price="15000" data-category="makanan" style="height: 48px; padding: 0 24px; border: none; cursor: pointer; font-family: inherit;">+ Keranjang</button>
                         </div>
                     </div>
@@ -120,32 +119,34 @@
 
                 <!-- Es Jeruk -->
                 <div class="card-premium reveal" style="padding: 0; overflow: hidden;">
-                    <div style="height: 200px; background-color: var(--surface-container-high);">
-                        <img src="assets/es_jeruk.png" alt="Es Jeruk" style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="card-premium reveal">
+                    <div class="card-img-container">
+                        <img src="assets/es_teh.webp" alt="Es Teh" class="card-img">
                     </div>
-                    <div style="padding: 24px;">
-                        <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Es Jeruk</h3>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
-                            <span style="font-size: 1.15rem; font-weight: 800; color: var(--primary);">Rp 5.000</span>
-                            <button class="btn-primary add-to-cart-btn" data-id="esjeruk" data-name="Es Jeruk" data-price="5000" data-category="minuman" style="height: 48px; padding: 0 16px; border: none; cursor: pointer; font-family: inherit;">+ Tambah</button>
+                    <div class="card-body">
+                        <h3>Es Teh</h3>
+                        <p class="body-lg">Teh wangi melati pilihan, segar dan manisnya pas.</p>
+                        <div class="card-footer">
+                            <span class="price">Rp 3.000</span>
+                            <button class="btn-primary add-to-cart-btn" data-id="teh" data-name="Es Teh" data-price="3000" data-category="minuman" style="height: 48px; padding: 0 24px; border: none; cursor: pointer; font-family: inherit;">+ Keranjang</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Es Teh Lemon -->
-                <div class="card-premium reveal" style="padding: 0; overflow: hidden;">
-                    <div style="height: 200px; background-color: var(--surface-container-high);">
-                        <img src="assets/es_teh_lemon.png" alt="Es Teh Lemon" style="width: 100%; height: 100%; object-fit: cover;">
+                <!-- Lemon Tea -->
+                <div class="card-premium reveal">
+                    <div class="card-img-container">
+                        <img src="assets/es_teh_lemon.webp" alt="Es Teh Lemon" class="card-img">
                     </div>
-                    <div style="padding: 24px;">
-                        <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Es Teh Lemon</h3>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
-                            <span style="font-size: 1.15rem; font-weight: 800; color: var(--primary);">Rp 5.000</span>
-                            <button class="btn-primary add-to-cart-btn" data-id="lemontea" data-name="Es Teh Lemon" data-price="5000" data-category="minuman" style="height: 48px; padding: 0 16px; border: none; cursor: pointer; font-family: inherit;">+ Tambah</button>
+                    <div class="card-body">
+                        <h3>Es Teh Lemon</h3>
+                        <p class="body-lg">Kombinasi teh segar dengan perasan lemon yang kaya vitamin C.</p>
+                        <div class="card-footer">
+                            <span class="price">Rp 6.000</span>
+                            <button class="btn-primary add-to-cart-btn" data-id="lemon" data-name="Es Teh Lemon" data-price="6000" data-category="minuman" style="height: 48px; padding: 0 24px; border: none; cursor: pointer; font-family: inherit;">+ Keranjang</button>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
@@ -172,7 +173,7 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 48px; align-items: center;">
                 <div class="reveal">
                     <h2 class="headline-lg" style="margin-bottom: 24px;">Kunjungi <span style="color: var(--primary);">Warung Kami</span></h2>
-                    <p class="body-lg" style="margin-bottom: 32px;">Kami berlokasi di jantung Gunungpati, mengabdi untuk pecinta kuliner Semarang.</p>
+                    <p class="body-lg" style="margin-bottom: 32px;">Kami berlokasi di jantung Gunungpati, membuat makanan yang enak dan terjangkau bagi Mahasiswa.</p>
                     
                     <div style="margin-bottom: 24px;">
                         <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--on-surface-variant); margin-bottom: 8px;">Alamat</h4>

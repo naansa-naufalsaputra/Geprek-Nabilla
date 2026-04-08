@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 2. Cart & Customization State ---
     let cart = {}; 
     let pendingItem = null; 
+    let modalQuantity = 1; 
     
     const floatingCart = document.getElementById('floating-cart');
     const cartBadge = document.getElementById('cart-badge');
@@ -112,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!customItemName || !customOptionsContainer || !customOverlay) return;
 
         pendingItem = { id, name, price: parseInt(price), category, selectedOptions: {} };
+        modalQuantity = 1;
         customItemName.innerText = `Kustomisasi ${name}`;
         
         let html = '';
@@ -147,8 +149,32 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             pendingItem.selectedOptions.gula = 'Gula Normal';
         }
+        // Add Quantity Selector to Modal
+        html += `
+            <div class="choice-group">
+                <label class="choice-label">Jumlah Pesanan</label>
+                <div class="qty-selector">
+                    <div class="qty-btn modal-minus">-</div>
+                    <div class="qty-value" id="modal-qty-val">1</div>
+                    <div class="qty-btn modal-plus">+</div>
+                </div>
+            </div>
+        `;
 
         customOptionsContainer.innerHTML = html;
+        
+        // Modal quantity listeners
+        const modalQtyVal = document.getElementById('modal-qty-val');
+        customOptionsContainer.querySelector('.modal-minus').addEventListener('click', () => {
+            if (modalQuantity > 1) {
+                modalQuantity--;
+                modalQtyVal.innerText = modalQuantity;
+            }
+        });
+        customOptionsContainer.querySelector('.modal-plus').addEventListener('click', () => {
+            modalQuantity++;
+            modalQtyVal.innerText = modalQuantity;
+        });
         
         customOptionsContainer.querySelectorAll('.choice-chip').forEach(chip => {
             chip.addEventListener('click', (e) => {
@@ -181,12 +207,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const uniqueId = `${pendingItem.id}-${optionsArr.join('-').replace(/\s+/g, '')}`;
 
         if (cart[uniqueId]) {
-            cart[uniqueId].qty++;
+            cart[uniqueId].qty += modalQuantity;
         } else {
             cart[uniqueId] = { 
                 name: pendingItem.name, 
                 price: finalPrice, 
-                qty: 1,
+                qty: modalQuantity,
                 options: optionsArr
             };
         }
