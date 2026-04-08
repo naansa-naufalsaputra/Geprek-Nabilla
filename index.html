@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geprek Nabilla | Pedasnya Nendang, Harganya Tenang!</title>
+    <meta name="description" content="Nikmati kelezatan Ayam Geprek dan Ayam Karamel Nabilla di Gunungpati Semarang. Premium, pedas, dan terjangkau!">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="glass-nav">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; height: 80px;">
+            <div class="logo" style="font-family: var(--font-heading); font-weight: 900; color: var(--primary); font-size: 1.5rem;">
+                NABILLA
+            </div>
+            <div class="nav-links" style="display: flex; gap: 24px;">
+                <a href="#menu" style="text-decoration: none; color: var(--on-surface); font-weight: 600;">Menu</a>
+                <a href="#kitchen" style="text-decoration: none; color: var(--on-surface); font-weight: 600;">Lokasi</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="section" style="padding: 60px 0; overflow: hidden;">
+        <div class="container" style="position: relative;">
+            <div class="hero-content reveal" style="max-width: 600px; position: relative; z-index: 2;">
+                <h1 class="display-lg" style="margin-bottom: 24px;">Pedasnya <span style="color: var(--primary);">Nendang</span>, Harganya Tenang!</h1>
+                <p class="body-lg" style="margin-bottom: 40px;">Nikmati kelezatan Ayam Geprek dengan bumbu rahasia Nusantara. Dibuat langsung untuk sensasi rasa yang tak terlupakan bagi lidah pecinta pedas.</p>
+                <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                    <a href="https://wa.me/?text=Halo%20Nabilla,%20saya%20mau%20pesan%20Ayam%20Geprek" class="btn-primary">Pesan via WA</a>
+                    <a href="#menu" class="btn-secondary">Lihat Menu</a>
+                </div>
+            </div>
+            <div class="hero-image reveal" style="position: absolute; right: -100px; top: 0; width: 600px; height: 500px; opacity: 0.15; z-index: 1;">
+                <img src="assets/hero-dish.webp" alt="Geprek Nabilla Hero" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu Gallery -->
+    <section id="menu" class="surface-low" style="padding: 100px 0;">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 60px;" class="reveal">
+                <h2 class="headline-lg">Galeri Kuliner Kami</h2>
+                <p class="body-lg">Pilih menu favoritmu, semuanya dimasak dengan cinta.</p>
+            </div>
+
+            <!-- Makanan Section -->
+            <h3 class="display-sm" style="margin-bottom: 24px; color: var(--on-surface);">Makanan Spesial</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px;">
+                
+                <!-- Ayam Geprek -->
+                <div class="card-premium reveal" style="padding: 0; overflow: hidden;">
+                    <div style="height: 250px; background-color: var(--surface-container-high);">
+                        <img src="assets/ayam-geprek.webp" alt="Ayam Geprek" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="padding: 32px;">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 8px;">Ayam Geprek</h3>
+                        <p class="body-lg" style="margin-bottom: 20px;">Ayam krispi gurih dengan sambal ulek segar pedas nendang.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 1.25rem; font-weight: 800; color: var(--primary);">Rp 13.000</span>
+                            <button class="btn-primary add-to-cart-btn" data-id="geprek" data-name="Ayam Geprek" data-price="13000" data-category="makanan" style="height: 48px; padding: 0 24px; border: none; cursor: pointer; font-family: inherit;">+ Keranjang</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ayam Karamel -->
+                <div class="card-premium reveal" style="padding: 0; overflow: hidden;">
+                    <div style="height: 250px; background-color: var(--surface-container-high);">
+                        <img src="assets/ayam-karamel.webp" alt="Ayam Karamel" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="padding: 32px;">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 8px;">Ayam Karamel</h3>
+                        <p class="body-lg" style="margin-bottom: 20px;">Ayam krispi dengan balutan bumbu karamel gurih manis yang meresap.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 1.25rem; font-weight: 800; color: var(--primary);">Rp 13.000</span>
+                            <button class="btn-primary add-to-cart-btn" data-id="karamel" data-name="Ayam Karamel" data-price="13000" data-category="makanan" style="height: 48px; padding: 0 24px; border: none; cursor: pointer; font-family: inherit;">+ Keranjang</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Babat Gongso -->
+                <div class="card-premium reveal" style="padding: 0; overflow: hidden;">
+                    <div style="height: 250px; background-color: var(--surface-container-high);">
+                        <img src="assets/babat_gongso.png" alt="Babat Gongso" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="padding: 32px;">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 8px;">Babat Gongso</h3>
+                        <p class="body-lg" style="margin-bottom: 20px;">Irisan babat sapi empuk tumis bumbu kecap manis pedas legit khas Semarang.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 1.25rem; font-weight: 800; color: var(--primary);">Rp 15.000</span>
+                            <button class="btn-primary add-to-cart-btn" data-id="babat" data-name="Babat Gongso" data-price="15000" data-category="makanan" style="height: 48px; padding: 0 24px; border: none; cursor: pointer; font-family: inherit;">+ Keranjang</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Minuman Section -->
+            <h3 class="display-sm reveal" style="margin-top: 80px; margin-bottom: 24px; color: var(--on-surface);">Penyegar Dahaga</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px;">
+                
+                <!-- Es Teh -->
+                <div class="card-premium reveal" style="padding: 0; overflow: hidden;">
+                    <div style="height: 200px; background-color: var(--surface-container-high);">
+                        <img src="assets/es_teh.png" alt="Es Teh Manis" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="padding: 24px;">
+                        <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Es Teh Manis</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                            <span style="font-size: 1.15rem; font-weight: 800; color: var(--primary);">Rp 3.000</span>
+                            <button class="btn-primary add-to-cart-btn" data-id="esteh" data-name="Es Teh Manis" data-price="3000" data-category="minuman" style="height: 48px; padding: 0 16px; border: none; cursor: pointer; font-family: inherit;">+ Tambah</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Es Jeruk -->
+                <div class="card-premium reveal" style="padding: 0; overflow: hidden;">
+                    <div style="height: 200px; background-color: var(--surface-container-high);">
+                        <img src="assets/es_jeruk.png" alt="Es Jeruk" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="padding: 24px;">
+                        <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Es Jeruk</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                            <span style="font-size: 1.15rem; font-weight: 800; color: var(--primary);">Rp 5.000</span>
+                            <button class="btn-primary add-to-cart-btn" data-id="esjeruk" data-name="Es Jeruk" data-price="5000" data-category="minuman" style="height: 48px; padding: 0 16px; border: none; cursor: pointer; font-family: inherit;">+ Tambah</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Es Teh Lemon -->
+                <div class="card-premium reveal" style="padding: 0; overflow: hidden;">
+                    <div style="height: 200px; background-color: var(--surface-container-high);">
+                        <img src="assets/es_teh_lemon.png" alt="Es Teh Lemon" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="padding: 24px;">
+                        <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Es Teh Lemon</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                            <span style="font-size: 1.15rem; font-weight: 800; color: var(--primary);">Rp 5.000</span>
+                            <button class="btn-primary add-to-cart-btn" data-id="lemontea" data-name="Es Teh Lemon" data-price="5000" data-category="minuman" style="height: 48px; padding: 0 16px; border: none; cursor: pointer; font-family: inherit;">+ Tambah</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Spice Meter Section (Custom Stitch Component) -->
+    <section style="padding: 80px 0;">
+        <div class="container reveal">
+            <div class="card-premium" style="display: flex; flex-direction: column; align-items: center; text-align: center; background: linear-gradient(to right, var(--surface-container-lowest), var(--surface-container-low));">
+                <h2 style="margin-bottom: 16px;">Tentukan Level Pedasmu!</h2>
+                <div style="display: flex; gap: 12px; margin: 24px 0;">
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background-color: #ffd600; display: flex; align-items: center; justify-content: center; font-weight: 900;">0</div>
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background-color: #ff9100; display: flex; align-items: center; justify-content: center; font-weight: 900; color: white;">5</div>
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background-color: #ff3d00; display: flex; align-items: center; justify-content: center; font-weight: 900; color: white;">10</div>
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background-color: #ae1417; display: flex; align-items: center; justify-content: center; font-weight: 900; color: white;">EXTRA</div>
+                </div>
+                <p class="body-lg">Dari tanpa pedas hingga level meledak, kami siapkan sesuai selera Anda.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Kitchen Section -->
+    <section id="kitchen" class="surface-low" style="padding: 100px 0;">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 48px; align-items: center;">
+                <div class="reveal">
+                    <h2 class="headline-lg" style="margin-bottom: 24px;">Kunjungi <span style="color: var(--primary);">Warung Kami</span></h2>
+                    <p class="body-lg" style="margin-bottom: 32px;">Kami berlokasi di jantung Gunungpati, mengabdi untuk pecinta kuliner Semarang.</p>
+                    
+                    <div style="margin-bottom: 24px;">
+                        <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--on-surface-variant); margin-bottom: 8px;">Alamat</h4>
+                        <p class="body-lg" style="color: var(--on-surface);">Gunungpati, Semarang, Jawa Tengah, Indonesia</p>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--on-surface-variant); margin-bottom: 8px;">Kontak</h4>
+                        <p class="body-lg" style="color: var(--on-surface);">WhatsApp: +62 [Placeholder]</p>
+                    </div>
+                </div>
+                <div class="card-premium reveal" style="height: 400px; padding: 0; overflow: hidden;">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d247.4769880420628!2d110.3963101!3d-7.0524779!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e708ba7d702f9e7%3A0x34d78d63f80dedb4!2sWarung%20geprek%20dan%20gongso%20nabila!5e0!3m2!1sid!2sid!4v1775657138387!5m2!1sid!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="padding: 60px 0; border-top: 1px solid var(--surface-container);">
+        <div class="container" style="text-align: center;">
+            <p style="color: var(--on-surface-variant);">© 2026 Nabilla Geprek Gallery. Dibuat dengan cinta untuk pecinta pedas.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+
+    <!-- Floating Cart Button -->
+    <div id="floating-cart" class="floating-cart" style="display: none;">
+        <span id="cart-badge" class="cart-badge">0</span>
+        <svg fill="currentColor" viewBox="0 0 24 24" width="24" height="24">
+            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+        </svg>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal-overlay" class="cart-overlay">
+        <div class="cart-modal">
+            <div class="cart-header">
+                <h3 class="headline-sm">Keranjang Pesanan</h3>
+                <button id="close-cart-btn" class="close-btn">&times;</button>
+            </div>
+            <div id="cart-items" class="cart-items">
+                <!-- Items will be injected here via JS -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cart-total-price" style="color: var(--primary); font-weight: 800;">Rp 0</span>
+                </div>
+                <button id="checkout-btn" class="btn-primary" style="width: 100%; height: 56px; border: none; cursor: pointer; font-family: inherit;">Pesan via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+    <!-- Customization Modal -->
+    <div id="custom-modal-overlay" class="cart-overlay">
+        <div class="cart-modal" style="max-height: 90vh; overflow-y: auto;">
+            <div class="cart-header">
+                <h3 id="custom-item-name" class="headline-sm">Kustomisasi Pesanan</h3>
+                <button id="close-custom-btn" class="close-btn">&times;</button>
+            </div>
+            
+            <div id="custom-options-container" style="padding: 24px;">
+                <!-- Content will be injected via JS based on category -->
+            </div>
+
+            <div class="cart-footer">
+                <button id="confirm-add-btn" class="btn-primary" style="width: 100%; height: 56px; border: none; cursor: pointer; font-family: inherit;">Tambahkan ke Keranjang</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
