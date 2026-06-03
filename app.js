@@ -1,46 +1,21 @@
-/* 
-  Geprek Nabilla - Interactions & State Management (v2.1 - Production Fix)
+/*
+  Geprek Nabilla - Interactions & State Management (v4.0 modular)
 */
 
+import { APP_CONFIG } from './js/config.js';
+import { trackEvent } from './js/analytics.js';
+import { loadCartFromStorage, saveCartToStorage } from './js/storage.js';
+import { addToCart, changeQty, getCartSummary } from './js/cart-core.js';
+import { formatRp, formatWaDisplayNumber, buildDefaultWaLink, buildWhatsAppMessage } from './js/whatsapp.js';
+
 document.addEventListener('DOMContentLoaded', () => {
-    // --- 1. UI Reveal (Intersection Observer for Production) ---
+    let cart = loadCartFromStorage(APP_CONFIG.storageCartKey);
+    let pendingItem = null;
+    let modalQuantity = 1;
+
     const revealElements = document.querySelectorAll('.reveal');
-    
-    if ('IntersectionObserver' in window) {
-        const revealObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target); // Reveal once
-                }
-            });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        });
+    const waCtaLinks = document.querySelectorAll('[data-wa-cta]');
 
-        revealElements.forEach(el => revealObserver.observe(el));
-    } else {
-        // Fallback for very old browsers
-        revealElements.forEach(el => el.classList.add('active'));
-    }
-
-    // --- Smooth Scroll ---
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            const target = document.querySelector(targetId);
-            if (target) target.scrollIntoView({ behavior: 'smooth' });
-        });
-    });
-
-    // --- 2. Cart & Customization State ---
-    let cart = {}; 
-    let pendingItem = null; 
-    let modalQuantity = 1; 
-    
     const floatingCart = document.getElementById('floating-cart');
     const cartBadge = document.getElementById('cart-badge');
     const cartOverlay = document.getElementById('cart-modal-overlay');
@@ -48,49 +23,71 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartItemsContainer = document.getElementById('cart-items');
     const cartTotalPrice = document.getElementById('cart-total-price');
     const checkoutBtn = document.getElementById('checkout-btn');
+    const orderTypeSelect = document.getElementById('order-type');
+    const orderNoteInput = document.getElementById('order-note');
 
     const customOverlay = document.getElementById('custom-modal-overlay');
     const closeCustomBtn = document.getElementById('close-custom-btn');
     const customItemName = document.getElementById('custom-item-name');
     const customOptionsContainer = document.getElementById('custom-options-container');
     const confirmAddBtn = document.getElementById('confirm-add-btn');
+    const waContactNumberText = document.getElementById('wa-contact-number');
 
-    const formatRp = (num) => 'Rp ' + num.toLocaleString('id-ID');
+    const syncWhatsAppCTA = () => {
+        const href = buildDefaultWaLink({
+            waNumber: APP_CONFIG.waNumber,
+            waGreeting: APP_CONFIG.waGreeting
+        });
 
-    const updateCartUI = () => {
+        waCtaLinks.forEach((link) => {
+            link.setAttribute('href', href);
+        });
+
+        if (waContactNumberText) {
+            waContactNumberText.textContent = formatWaDisplayNumber(APP_CONFIG.waNumber);
+        }
+    };
+
+    const persistCart = () => {
+        saveCartToStorage(APP_CONFIG.storageCartKey, cart);
+    };
+
+    const refreshCartUI = () => {
         if (!cartBadge || !cartTotalPrice || !cartItemsContainer || !floatingCart) return;
 
         let totalItems = 0;
         let totalPrice = 0;
         let itemsHtml = '';
 
-        Object.keys(cart).forEach(id => {
+        Object.keys(cart).forEach((id) => {
             const item = cart[id];
             totalItems += item.qty;
             totalPrice += (item.price * item.qty);
 
-            const optionsText = item.options.length > 0 ? `<div class="cart-item-options" style="font-size: 0.8rem; opacity: 0.7;">${item.options.join(', ')}</div>` : '';
+            const optionsText = item.options.length > 0
+                ? `<div class="cart-item-options" style="font-size: 0.8rem; opacity: 0.7;">${item.options.join(', ')}</div>`
+                : '';
 
             itemsHtml += `
                 <div class="cart-item">
                     <div class="cart-item-info">
                         <div class="cart-item-title">${item.name}</div>
                         ${optionsText}
-                        <div class="cart-item-price">${formatRp(item.price * item.qty)}</div>
+                        <div class="cart-item-price">${formatRp(item.price * item.qty, APP_CONFIG.currency)}</div>
                     </div>
                     <div class="cart-item-controls">
-                        <button class="qty-btn minus" data-id="${id}">-</button>
+                        <button class="qty-btn minus" aria-label="Kurangi jumlah item" data-id="${id}">-</button>
                         <span style="font-weight: 800; min-width: 20px; text-align: center;">${item.qty}</span>
-                        <button class="qty-btn plus" data-id="${id}">+</button>
+                        <button class="qty-btn plus" aria-label="Tambah jumlah item" data-id="${id}">+</button>
                     </div>
                 </div>
             `;
         });
 
         cartBadge.innerText = totalItems;
-        cartTotalPrice.innerText = formatRp(totalPrice);
-        
+        cartTotalPrice.innerText = formatRp(totalPrice, APP_CONFIG.currency);
         floatingCart.style.display = totalItems > 0 ? 'flex' : 'none';
+
         if (totalItems === 0 && cartOverlay.classList.contains('active')) {
             cartOverlay.classList.remove('active');
         }
@@ -99,30 +96,38 @@ document.addEventListener('DOMContentLoaded', () => {
             cartItemsContainer.innerHTML = '<div class="empty-cart-msg">Keranjang Anda masih kosong.</div>';
         } else {
             cartItemsContainer.innerHTML = itemsHtml;
-            cartItemsContainer.querySelectorAll('.qty-btn').forEach(btn => {
+            cartItemsContainer.querySelectorAll('.qty-btn').forEach((btn) => {
                 btn.addEventListener('click', (e) => {
-                    const id = e.target.getAttribute('data-id');
-                    const change = e.target.classList.contains('plus') ? 1 : -1;
-                    changeQty(id, change);
+                    const id = e.currentTarget.getAttribute('data-id');
+                    const delta = e.currentTarget.classList.contains('plus') ? 1 : -1;
+                    cart = changeQty({ cart, id, delta });
+                    persistCart();
+                    refreshCartUI();
+
+                    const summary = getCartSummary(cart);
+                    trackEvent('update_cart_qty', {
+                        total_items: summary.totalItems,
+                        total_price: summary.totalPrice
+                    });
                 });
             });
         }
     };
 
-    const openCustomModal = (id, name, price, category) => {
+    const renderCustomizationModal = (id, name, price, category) => {
         if (!customItemName || !customOptionsContainer || !customOverlay) return;
 
-        pendingItem = { id, name, price: parseInt(price), category, selectedOptions: {} };
+        pendingItem = { id, name, price: Number.parseInt(price, 10), category, selectedOptions: {} };
         modalQuantity = 1;
         customItemName.innerText = `Kustomisasi ${name}`;
-        
+
         let html = '';
         if (category === 'makanan') {
             html += `
                 <div class="choice-group">
                     <label class="choice-label">Level Pedas (0 - 5)</label>
                     <div class="choice-chips" data-key="pedas">
-                        ${[0,1,2,3,4,5].map(lvl => `<div class="choice-chip ${lvl === 0 ? 'active' : ''}" data-value="Lvl ${lvl}">${lvl}</div>`).join('')}
+                        ${[0, 1, 2, 3, 4, 5].map((lvl) => `<div class="choice-chip ${lvl === 0 ? 'active' : ''}" data-value="Lvl ${lvl}">${lvl}</div>`).join('')}
                     </div>
                 </div>
                 <div class="choice-group">
@@ -149,96 +154,139 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             pendingItem.selectedOptions.gula = 'Gula Normal';
         }
-        // Add Quantity Selector to Modal
+
         html += `
             <div class="choice-group">
                 <label class="choice-label">Jumlah Pesanan</label>
                 <div class="qty-selector">
-                    <div class="qty-btn modal-minus">-</div>
+                    <button type="button" class="qty-btn modal-minus" aria-label="Kurangi jumlah">-</button>
                     <div class="qty-value" id="modal-qty-val">1</div>
-                    <div class="qty-btn modal-plus">+</div>
+                    <button type="button" class="qty-btn modal-plus" aria-label="Tambah jumlah">+</button>
                 </div>
             </div>
         `;
 
         customOptionsContainer.innerHTML = html;
-        
-        // Modal quantity listeners
+
         const modalQtyVal = document.getElementById('modal-qty-val');
         customOptionsContainer.querySelector('.modal-minus').addEventListener('click', () => {
             if (modalQuantity > 1) {
-                modalQuantity--;
+                modalQuantity -= 1;
                 modalQtyVal.innerText = modalQuantity;
             }
         });
+
         customOptionsContainer.querySelector('.modal-plus').addEventListener('click', () => {
-            modalQuantity++;
+            modalQuantity += 1;
             modalQtyVal.innerText = modalQuantity;
         });
-        
-        customOptionsContainer.querySelectorAll('.choice-chip').forEach(chip => {
+
+        customOptionsContainer.querySelectorAll('.choice-chip').forEach((chip) => {
+            chip.setAttribute('role', 'button');
+            chip.setAttribute('tabindex', '0');
+
             chip.addEventListener('click', (e) => {
-                const group = e.target.closest('.choice-chips');
+                const group = e.currentTarget.closest('.choice-chips');
                 const key = group.getAttribute('data-key');
-                const val = e.target.getAttribute('data-value');
-                
-                group.querySelectorAll('.choice-chip').forEach(c => c.classList.remove('active'));
-                e.target.classList.add('active');
-                
+                const val = e.currentTarget.getAttribute('data-value');
+
+                group.querySelectorAll('.choice-chip').forEach((c) => c.classList.remove('active'));
+                e.currentTarget.classList.add('active');
                 pendingItem.selectedOptions[key] = val;
-                
-                const addPrice = e.target.getAttribute('data-add-price');
+
+                const addPrice = e.currentTarget.getAttribute('data-add-price');
                 if (addPrice && key === 'nasi') {
-                    pendingItem.extraPrice = parseInt(addPrice);
+                    pendingItem.extraPrice = Number.parseInt(addPrice, 10);
                 } else if (key === 'nasi') {
                     pendingItem.extraPrice = 0;
+                }
+            });
+
+            chip.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.currentTarget.click();
                 }
             });
         });
 
         customOverlay.classList.add('active');
+        trackEvent('open_customization', { item_id: id, category });
     };
 
     const confirmAddToCart = () => {
         if (!pendingItem) return;
 
-        const optionsArr = Object.values(pendingItem.selectedOptions);
+        const options = Object.values(pendingItem.selectedOptions);
         const finalPrice = pendingItem.price + (pendingItem.extraPrice || 0);
-        const uniqueId = `${pendingItem.id}-${optionsArr.join('-').replace(/\s+/g, '')}`;
 
-        if (cart[uniqueId]) {
-            cart[uniqueId].qty += modalQuantity;
-        } else {
-            cart[uniqueId] = { 
-                name: pendingItem.name, 
-                price: finalPrice, 
-                qty: modalQuantity,
-                options: optionsArr
-            };
-        }
+        cart = addToCart({
+            cart,
+            itemId: pendingItem.id,
+            name: pendingItem.name,
+            price: finalPrice,
+            quantity: modalQuantity,
+            options
+        });
 
-        updateCartUI();
+        persistCart();
+        refreshCartUI();
         customOverlay.classList.remove('active');
+
+        trackEvent('add_to_cart', {
+            item_id: pendingItem.id,
+            item_name: pendingItem.name,
+            category: pendingItem.category,
+            quantity: modalQuantity,
+            unit_price: finalPrice
+        });
+
         pendingItem = null;
 
         if (floatingCart) {
             floatingCart.style.transform = 'scale(1.2)';
-            setTimeout(() => { if (floatingCart) floatingCart.style.transform = ''; }, 200);
+            setTimeout(() => {
+                floatingCart.style.transform = '';
+            }, 200);
         }
     };
 
-    const changeQty = (id, delta) => {
-        if (!cart[id]) return;
-        cart[id].qty += delta;
-        if (cart[id].qty <= 0) delete cart[id];
-        updateCartUI();
+    const initRevealAnimation = () => {
+        if ('IntersectionObserver' in window) {
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            revealElements.forEach((el) => revealObserver.observe(el));
+        } else {
+            revealElements.forEach((el) => el.classList.add('active'));
+        }
     };
 
-    // --- 3. Events ---
-    document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+    const initSmoothScroll = () => {
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+            anchor.addEventListener('click', function onAnchorClick(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const target = document.querySelector(targetId);
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    };
+
+    document.querySelectorAll('.add-to-cart-btn').forEach((btn) => {
         btn.addEventListener('click', (e) => {
             const el = e.currentTarget;
-            openCustomModal(
+            renderCustomizationModal(
                 el.getAttribute('data-id'),
                 el.getAttribute('data-name'),
                 el.getAttribute('data-price'),
@@ -249,33 +297,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (confirmAddBtn) confirmAddBtn.addEventListener('click', confirmAddToCart);
     if (closeCustomBtn) closeCustomBtn.addEventListener('click', () => customOverlay.classList.remove('active'));
-    if (floatingCart) floatingCart.addEventListener('click', () => cartOverlay.classList.add('active'));
+
+    if (floatingCart) {
+        floatingCart.addEventListener('click', () => {
+            cartOverlay.classList.add('active');
+            trackEvent('open_cart');
+        });
+
+        floatingCart.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                cartOverlay.classList.add('active');
+                trackEvent('open_cart');
+            }
+        });
+    }
+
     if (closeCartBtn) closeCartBtn.addEventListener('click', () => cartOverlay.classList.remove('active'));
+
+    if (cartOverlay) {
+        cartOverlay.addEventListener('click', (event) => {
+            if (event.target === cartOverlay) cartOverlay.classList.remove('active');
+        });
+    }
+
+    if (customOverlay) {
+        customOverlay.addEventListener('click', (event) => {
+            if (event.target === customOverlay) customOverlay.classList.remove('active');
+        });
+    }
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            cartOverlay.classList.remove('active');
+            customOverlay.classList.remove('active');
+        }
+    });
 
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', () => {
-            let totalItems = 0;
-            let totalPrice = 0;
-            let message = `Halo Geprek Nabilla, saya ingin memesan:\n\n`;
-            
-            Object.keys(cart).forEach(id => {
-                const item = cart[id];
-                totalItems += item.qty;
-                const subtotal = item.price * item.qty;
-                totalPrice += subtotal;
-                
-                const optionsStr = item.options.length > 0 ? ` [${item.options.join(', ')}]` : '';
-                message += `- ${item.qty}x ${item.name}${optionsStr} (${formatRp(subtotal)})\n`;
-            });
-            
-            if (totalItems === 0) return;
-            message += `\n*Total Akhir: ${formatRp(totalPrice)}*\n\nMohon informasi total pembayaran dan ongkirnya. Terima kasih!`;
+            const summary = getCartSummary(cart);
+            if (summary.totalItems === 0) return;
 
-            const waNumber = '6280000000000'; // Update with real number
-            const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+            const message = buildWhatsAppMessage({
+                cart,
+                waGreeting: APP_CONFIG.waGreeting,
+                currency: APP_CONFIG.currency,
+                orderType: orderTypeSelect ? orderTypeSelect.value : 'Delivery',
+                note: orderNoteInput ? orderNoteInput.value.trim() : ''
+            });
+
+            const waLink = `https://wa.me/${APP_CONFIG.waNumber}?text=${encodeURIComponent(message)}`;
+
+            trackEvent('checkout_whatsapp', {
+                total_items: summary.totalItems,
+                total_price: summary.totalPrice
+            });
+
             window.open(waLink, '_blank');
         });
     }
 
-    updateCartUI();
+    syncWhatsAppCTA();
+    waCtaLinks.forEach((link) => {
+        link.addEventListener('click', () => trackEvent('click_wa_cta'));
+    });
+
+    initRevealAnimation();
+    initSmoothScroll();
+    refreshCartUI();
+    trackEvent('page_view_home');
 });

@@ -22,17 +22,20 @@
     --on-surface: #1a1c1c;
     --on-surface-variant: #5b403d;
     --on-primary: #ffffff;
-    
+    --on-primary-container: #ffffff;
+    --outline-variant: #ddd7d6;
+
     /* Typography */
     --font-heading: 'Plus Jakarta Sans', sans-serif;
     --font-body: 'Lexend', sans-serif;
-    
+
     /* Spacing & Shapes */
     --radius-lg: 1rem;
+    --radius-md: 0.75rem;
     --radius-xl: 1.5rem;
     --radius-pill: 9999px;
     --spacing-unit: 8px;
-    
+
     /* Transitions */
     --ease-premium: cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 0.6s var(--ease-premium);
@@ -54,7 +57,10 @@ body {
     overflow-x: hidden;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
     font-family: var(--font-heading);
     color: var(--on-surface);
     font-weight: 800;
@@ -62,9 +68,17 @@ h1, h2, h3, h4 {
 }
 
 /* Tonal Layering Utilities (The No-Line Rule) */
-.surface-low { background-color: var(--surface-container-low); }
-.surface-lowest { background-color: var(--surface-container-lowest); }
-.surface-high { background-color: var(--surface-container-high); }
+.surface-low {
+    background-color: var(--surface-container-low);
+}
+
+.surface-lowest {
+    background-color: var(--surface-container-lowest);
+}
+
+.surface-high {
+    background-color: var(--surface-container-high);
+}
 
 .card-premium {
     background: var(--surface);
@@ -104,7 +118,8 @@ h1, h2, h3, h4 {
     padding: 32px;
     display: flex;
     flex-direction: column;
-    flex: 1; /* This takes up remaining space */
+    flex: 1;
+    /* This takes up remaining space */
 }
 
 .card-body h3 {
@@ -116,7 +131,8 @@ h1, h2, h3, h4 {
 .card-body p {
     margin-bottom: 24px;
     color: var(--on-surface-variant);
-    flex: 1; /* This pushes the footer down */
+    flex: 1;
+    /* This pushes the footer down */
 }
 
 .card-footer {
@@ -125,7 +141,8 @@ h1, h2, h3, h4 {
     align-items: center;
     padding-top: 16px;
     border-top: 1px solid var(--outline-variant);
-    margin-top: auto; /* Safety net for footer positioning */
+    margin-top: auto;
+    /* Safety net for footer positioning */
 }
 
 .price {
@@ -211,7 +228,8 @@ h1, h2, h3, h4 {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 60px; /* Over 56px for accessibility */
+    height: 60px;
+    /* Over 56px for accessibility */
     padding: 0 32px;
     background: linear-gradient(135deg, var(--primary), var(--primary-container));
     color: var(--on-primary);
@@ -226,6 +244,17 @@ h1, h2, h3, h4 {
 
 .btn-primary:active {
     transform: scale(0.95);
+}
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.qty-btn:focus-visible,
+.close-btn:focus-visible,
+.choice-chip:focus-visible,
+.checkout-input:focus-visible,
+.floating-cart:focus-visible {
+    outline: 3px solid rgba(174, 20, 23, 0.35);
+    outline-offset: 2px;
 }
 
 .btn-secondary {
@@ -272,7 +301,7 @@ h1, h2, h3, h4 {
     .display-lg {
         font-size: 2.5rem;
     }
-    
+
     .headline-lg {
         font-size: 1.75rem;
     }
@@ -345,7 +374,7 @@ h1, h2, h3, h4 {
     max-width: 400px;
     height: 100%;
     background-color: var(--surface);
-    box-shadow: -8px 0 32px rgba(0,0,0,0.1);
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.1);
     transform: translateX(100%);
     transition: transform 0.4s var(--ease-premium);
     display: flex;
@@ -360,12 +389,14 @@ h1, h2, h3, h4 {
     .cart-overlay {
         align-items: flex-end;
     }
+
     .cart-modal {
         height: 85vh;
         border-radius: 24px 24px 0 0;
         transform: translateY(100%);
-        box-shadow: 0 -8px 32px rgba(0,0,0,0.1);
+        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.1);
     }
+
     .cart-overlay.active .cart-modal {
         transform: translateY(0);
     }
@@ -447,6 +478,26 @@ h1, h2, h3, h4 {
     border-top: 1px solid var(--surface-container);
 }
 
+.checkout-meta {
+    margin-bottom: 16px;
+}
+
+.checkout-input {
+    width: 100%;
+    border: 1px solid var(--outline-variant);
+    background-color: var(--surface);
+    color: var(--on-surface);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+}
+
+textarea.checkout-input {
+    resize: vertical;
+    min-height: 72px;
+}
+
 .cart-total {
     display: flex;
     justify-content: space-between;
@@ -460,6 +511,7 @@ h1, h2, h3, h4 {
     color: var(--on-surface-variant);
     margin-top: 40px;
 }
+
 /* --- Customization Modal Choices --- */
 .choice-group {
     margin-bottom: 24px;
